@@ -19,7 +19,8 @@ IMMUNE = 6
 LAST_SICK_STATE = SICK_4
 
 SAVE_FRAMES = True
-FRAMES_FOLDER = "конец4"
+FRAMES_FOLDER = "испр4"
+GRAPH_FRAMES_FOLDER = "график4"
 
 
 def get_integer(text, min_value, max_value=None):
@@ -93,8 +94,18 @@ def get_settings():
         100
     )
 
+    immunity_days = get_integer(
+        "Количество дней иммунитета: ",
+        1
+    )
+
+    days_count = get_integer(
+        "Количество дней эпидемии: ",
+        1
+    )
+
     delay = get_float(
-        "Длительность дня в секундах: ",
+        "Пауза между кадрами в секундах: ",
         0,
         1000
     )
@@ -109,6 +120,8 @@ def get_settings():
         min_sick_neighbors,
         death_percent / 100,
         infected_percent,
+        immunity_days,
+        days_count,
         delay
     )
 
@@ -116,6 +129,13 @@ def get_settings():
 def create_grid(width, height):
     return [
         [HEALTHY for _ in range(width)]
+        for _ in range(height)
+    ]
+
+
+def create_immunity_grid(width, height):
+    return [
+        [0 for _ in range(width)]
         for _ in range(height)
     ]
 
@@ -137,23 +157,17 @@ def get_neighbors(x, y, width, height):
     return neighbors
 
 
-def has_sick_cells(grid):
-    for row in grid:
-        for state in row:
-            if SICK_1 <= state <= LAST_SICK_STATE:
-                return True
-
-    return False
-
-
 def update_grid(
     grid,
+    immunity_grid,
     width,
     height,
     min_sick_neighbors,
-    death_probability
+    death_probability,
+    immunity_days
 ):
     new_grid = [row.copy() for row in grid]
+    new_immunity_grid = [row.copy() for row in immunity_grid]
 
     for y in range(height):
         for x in range(width):
@@ -161,9 +175,18 @@ def update_grid(
 
             if state == DEAD:
                 new_grid[y][x] = DEAD
+                new_immunity_grid[y][x] = 0
 
             elif state == IMMUNE:
-                new_grid[y][x] = IMMUNE
+                # Каждый день иммунитета уменьшается на 1.
+                new_immunity_grid[y][x] -= 1
+
+                # После окончания иммунитета клетка снова становится здоровой.
+                if new_immunity_grid[y][x] <= 0:
+                    new_grid[y][x] = HEALTHY
+                    new_immunity_grid[y][x] = 0
+                else:
+                    new_grid[y][x] = IMMUNE
 
             elif state == HEALTHY:
                 sick_count = 0
@@ -188,6 +211,7 @@ def update_grid(
             elif state == SICK_2:
                 if random.random() < death_probability:
                     new_grid[y][x] = DEAD
+                    new_immunity_grid[y][x] = 0
                 else:
                     new_grid[y][x] = SICK_3
 
@@ -195,9 +219,11 @@ def update_grid(
                 new_grid[y][x] = SICK_4
 
             elif state == SICK_4:
+                # После последней стадии болезни клетка получает иммунитет.
                 new_grid[y][x] = IMMUNE
+                new_immunity_grid[y][x] = immunity_days
 
-    return new_grid
+    return new_grid, new_immunity_grid
 
 
 def infect_initial_cells(grid, width, height, infected_percent):
@@ -271,9 +297,11 @@ def create_color_map():
 def draw_grid(
     image,
     grid,
-    step,
+    day,
+    days_count,
     infected_percent,
-    min_sick_neighbors
+    min_sick_neighbors,
+    immunity_days
 ):
     healthy, sick, dead, immune = get_statistics(grid)
 
@@ -285,37 +313,35 @@ def draw_grid(
         f"{min_sick_neighbors}\n"
         f"Начально заражено: "
         f"{infected_percent:.2f}%\n"
-        f"Шаг: {step}\n"
+        f"Иммунитет: {immunity_days} дн.\n"
+        f"День: {day} из {days_count}\n"
         f"Здоровых: {healthy} | "
         f"Больных: {sick} | "
         f"Умерших: {dead} | "
-        f"Переболевших: {immune}"
+        f"Иммунных: {immune}"
     )
 
 
-def delete_old_frames():
-    os.makedirs(FRAMES_FOLDER, exist_ok=True)
+def delete_old_frames(folder):
+    os.makedirs(folder, exist_ok=True)
 
-    for file_name in os.listdir(FRAMES_FOLDER):
+    for file_name in os.listdir(folder):
         if file_name.endswith(".png"):
-            file_path = os.path.join(
-                FRAMES_FOLDER,
-                file_name
-            )
+            file_path = os.path.join(folder, file_name)
             os.remove(file_path)
 
 
-def create_gif(delay):
+def create_gif(folder, gif_name, delay):
     if not SAVE_FRAMES:
         print("Сохранение кадров выключено.")
         return
 
     frame_files = []
 
-    for file_name in os.listdir(FRAMES_FOLDER):
+    for file_name in os.listdir(folder):
         if file_name.endswith(".png"):
             frame_files.append(
-                os.path.join(FRAMES_FOLDER, file_name)
+                os.path.join(folder, file_name)
             )
 
     frame_files.sort()
@@ -330,16 +356,13 @@ def create_gif(delay):
         frame = Image.open(file_name).convert("RGB")
         frames.append(frame)
 
-    gif_path = os.path.join(
-        FRAMES_FOLDER,
-        "epidemic.gif"
-    )
+    gif_path = os.path.join(folder, gif_name)
 
     frames[0].save(
         gif_path,
         save_all=True,
         append_images=frames[1:],
-        duration=int(delay * 1000),
+        duration=max(1, int(delay * 1000)),
         loop=0
     )
 
@@ -351,7 +374,7 @@ def create_gif(delay):
 
 def show_last_day(
     last_grid,
-    last_step,
+    last_day,
     color_map
 ):
     figure, axis = plt.subplots(
@@ -367,7 +390,7 @@ def show_last_day(
     )
 
     axis.set_title(
-        f"Последний день эпидемии: {last_step}"
+        f"Последний день эпидемии: {last_day}"
     )
     axis.set_aspect("equal")
     axis.set_xlabel("")
@@ -384,6 +407,93 @@ def show_last_day(
     figure.canvas.flush_events()
 
 
+def save_frame(figure, day):
+    if not SAVE_FRAMES:
+        return
+
+    file_name = os.path.join(
+        FRAMES_FOLDER,
+        f"day_{day:05d}.png"
+    )
+
+    figure.savefig(
+        file_name,
+        dpi=150,
+        bbox_inches="tight"
+    )
+
+
+def draw_graph(
+    axis,
+    days_history,
+    healthy_history,
+    sick_history,
+    immune_history,
+    dead_history,
+    days_count,
+    total_cells
+):
+    axis.clear()
+
+    axis.plot(
+        days_history,
+        sick_history,
+        color="#e53935",
+        linewidth=2,
+        label="Заразившиеся"
+    )
+
+    axis.plot(
+        days_history,
+        healthy_history,
+        color="#66bb6a",
+        linewidth=2,
+        label="Здоровые"
+    )
+
+    axis.plot(
+        days_history,
+        immune_history,
+        color="#7FFF00",
+        linewidth=2,
+        label="Иммунные"
+    )
+
+    axis.plot(
+        days_history,
+        dead_history,
+        color="#000000",
+        linewidth=2,
+        label="Умершие"
+    )
+
+    axis.set_title("Изменение количества клеток во время эпидемии")
+    axis.set_xlabel("Количество дней эпидемии")
+    axis.set_ylabel("Количество клеток")
+
+    axis.set_xlim(1, days_count)
+    axis.set_ylim(0, total_cells)
+
+    axis.grid(True, linestyle="--", alpha=0.5)
+    axis.legend(loc="best")
+
+
+def save_graph_frame(figure, day):
+    if not SAVE_FRAMES:
+        return
+
+    file_name = os.path.join(
+        GRAPH_FRAMES_FOLDER,
+        f"graph_day_{day:05d}.png"
+    )
+
+    figure.savefig(
+        file_name,
+        dpi=150,
+        bbox_inches="tight"
+    )
+
+
 def main():
     settings = get_settings()
 
@@ -392,12 +502,16 @@ def main():
     min_sick_neighbors = settings[2]
     death_probability = settings[3]
     infected_percent = settings[4]
-    delay = settings[5]
+    immunity_days = settings[5]
+    days_count = settings[6]
+    delay = settings[7]
 
     if SAVE_FRAMES:
-        delete_old_frames()
+        delete_old_frames(FRAMES_FOLDER)
+        delete_old_frames(GRAPH_FRAMES_FOLDER)
 
     grid = create_grid(width, height)
+    immunity_grid = create_immunity_grid(width, height)
 
     infect_initial_cells(
         grid,
@@ -405,10 +519,6 @@ def main():
         height,
         infected_percent
     )
-
-    first_grid = [row.copy() for row in grid]
-
-    print_day_statistics(1, grid)
 
     plt.ion()
 
@@ -431,91 +541,103 @@ def main():
     colorbar = figure.colorbar(image, ax=axis)
     colorbar.set_label("Состояние клетки")
 
-    step = 0
+    graph_figure, graph_axis = plt.subplots(figsize=(12, 7))
 
-    while has_sick_cells(grid):
+    days_history = []
+    healthy_history = []
+    sick_history = []
+    immune_history = []
+    dead_history = []
+
+    total_cells = width * height
+
+    for day in range(1, days_count + 1):
+        healthy, sick, dead, immune = get_statistics(grid)
+
+        days_history.append(day)
+        healthy_history.append(healthy)
+        sick_history.append(sick)
+        immune_history.append(immune)
+        dead_history.append(dead)
+
         draw_grid(
             image,
             grid,
-            step,
+            day,
+            days_count,
             infected_percent,
-            min_sick_neighbors
+            min_sick_neighbors,
+            immunity_days
+        )
+
+        draw_graph(
+            graph_axis,
+            days_history,
+            healthy_history,
+            sick_history,
+            immune_history,
+            dead_history,
+            days_count,
+            total_cells
         )
 
         figure.canvas.draw()
         figure.canvas.flush_events()
 
-        if SAVE_FRAMES:
-            file_name = os.path.join(
-                FRAMES_FOLDER,
-                f"step_{step:03d}.png"
+        graph_figure.canvas.draw()
+        graph_figure.canvas.flush_events()
+
+        save_frame(figure, day)
+        save_graph_frame(graph_figure, day)
+
+        print(f"Рассчитано дней: {day} из {days_count}")
+
+        if day < days_count:
+            plt.pause(delay)
+
+            grid, immunity_grid = update_grid(
+                grid,
+                immunity_grid,
+                width,
+                height,
+                min_sick_neighbors,
+                death_probability,
+                immunity_days
             )
-
-            figure.savefig(
-                file_name,
-                dpi=150,
-                bbox_inches="tight"
-            )
-
-        plt.pause(delay)
-
-        grid = update_grid(
-            grid,
-            width,
-            height,
-            min_sick_neighbors,
-            death_probability
-        )
-
-        step += 1
-
-    draw_grid(
-        image,
-        grid,
-        step,
-        infected_percent,
-        min_sick_neighbors
-    )
-
-    figure.canvas.draw()
-    figure.canvas.flush_events()
-
-    if SAVE_FRAMES:
-        final_file_name = os.path.join(
-            FRAMES_FOLDER,
-            f"step_{step:03d}.png"
-        )
-
-        figure.savefig(
-            final_file_name,
-            dpi=150,
-            bbox_inches="tight"
-        )
 
     plt.pause(delay)
 
-    print_day_statistics(step + 1, grid)
+    print_day_statistics(days_count, grid)
 
     print()
     print("=" * 50)
-    print("ЭПИДЕМИЯ ЗАВЕРШИЛАСЬ")
+    print("РАСЧЁТ ЭПИДЕМИИ ЗАВЕРШЁН")
     print("=" * 50)
-    print("Последний день эпидемии:", step + 1)
+    print("Всего рассчитано дней:", days_count)
     print("=" * 50)
-
 
     show_last_day(
-    grid,
-    step + 1,
-    color_map
+        grid,
+        days_count,
+        color_map
     )
 
     plt.ioff()
 
-    create_gif(delay)
+    create_gif(
+        FRAMES_FOLDER,
+        "epidemic.gif",
+        delay
+    )
+
+    create_gif(
+        GRAPH_FRAMES_FOLDER,
+        "epidemic_graph.gif",
+        delay
+    )
 
     plt.show()
 
-100
+
 if __name__ == "__main__":
     main()
