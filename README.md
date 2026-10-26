@@ -16,51 +16,56 @@
 <table>
   <!-- Строка 1 -->
   <tr>
-    <td width="25%" align="center"><img src="gif/epidemic_pic1.gif" width="200"><br><sub>epidemic_pic1</sub></td>
-    <td width="25%" align="center"><img src="gif/epidemic_pic2.gif" width="200"><br><sub>epidemic_pic2</sub></td>
-    <td width="25%" align="center"><img src="gif/epidemic_pic3.gif" width="200"><br><sub>epidemic_pic3</sub></td>
-    <td width="25%" align="center"><img src="gif/epidemic_pic4.gif" width="200"><br><sub>epidemic_pic4</sub></td>
+    <td width="33%" align="center"><img src="gif/epidemic_pic1.gif" width="300"><br><sub>epidemic_pic1</sub></td>
+    <td width="33%" align="center"><img src="gif/epidemic_pic2.gif" width="300"><br><sub>epidemic_pic2</sub></td>
+    <td width="33%" align="center"><img src="gif/epidemic_pic3.gif" width="300"><br><sub>epidemic_pic3</sub></td>
   </tr>
   <!-- Строка 2 -->
   <tr>
-    <td width="25%" align="center"><img src="gif/epidemic_pic5.gif" width="200"><br><sub>epidemic_pic5</sub></td>
-    <td width="25%" align="center"><img src="gif/epidemic_pic6.gif" width="200"><br><sub>epidemic_pic6</sub></td>
-    <td width="25%" align="center"><img src="gif/epidemic_pic7.gif" width="200"><br><sub>epidemic_pic7</sub></td>
-    <td width="25%" align="center"><img src="gif/epidemic_pic8_1.gif" width="200"><br><sub>epidemic_pic8_1</sub></td>
+    <td width="33%" align="center"><img src="gif/epidemic_pic4.gif" width="300"><br><sub>epidemic_pic4</sub></td>
+    <td width="33%" align="center"><img src="gif/epidemic_pic5.gif" width="300"><br><sub>epidemic_pic5</sub></td>
+    <td width="33%" align="center"><img src="gif/epidemic_pic6.gif" width="300"><br><sub>epidemic_pic6</sub></td>
   </tr>
   <!-- Строка 3 -->
   <tr>
-    <td width="25%" align="center"><img src="gif/epidemic_pic8_2.gif" width="200"><br><sub>epidemic_pic8_2</sub></td>
-    <td width="25%" align="center"><img src="gif/epidemic_pic9.gif" width="200"><br><sub>epidemic_pic9</sub></td>
-    <td width="25%" align="center"><img src="gif/epidemic_pic10.gif" width="200"><br><sub>epidemic_pic10</sub></td>
-    <td width="25%" align="center"><img src="gif/epidemic_pic11.gif" width="200"><br><sub>epidemic_pic11</sub></td>
+    <td width="33%" align="center"><img src="gif/epidemic_pic7.gif" width="300"><br><sub>epidemic_pic7</sub></td>
+    <td width="33%" align="center"><img src="gif/epidemic_pic8_1.gif" width="300"><br><sub>epidemic_pic8_1</sub></td>
+    <td width="33%" align="center"><img src="gif/epidemic_pic8_2.gif" width="300"><br><sub>epidemic_pic8_2</sub></td>
   </tr>
   <!-- Строка 4 -->
   <tr>
-    <td width="25%" align="center"><img src="gif/epidemic_pic12.gif" width="200"><br><sub>epidemic_pic12</sub></td>
-    <td width="25%" align="center"><img src="gif/epidemic_pic13.gif" width="200"><br><sub>epidemic_pic13</sub></td>
-    <td width="25%" align="center"><img src="gif/epidemic_pic14_1.gif" width="200"><br><sub>epidemic_pic14_1</sub></td>
-    <td width="25%" align="center"><img src="gif/epidemic_pic14_2.gif" width="200"><br><sub>epidemic_pic14_2</sub></td>
+    <td width="33%" align="center"><img src="gif/epidemic_pic9.gif" width="300"><br><sub>epidemic_pic9</sub></td>
+    <td width="33%" align="center"><img src="gif/epidemic_pic10.gif" width="300"><br><sub>epidemic_pic10</sub></td>
+    <td width="33%" align="center"><img src="gif/epidemic_pic11.gif" width="300"><br><sub>epidemic_pic11</sub></td>
   </tr>
   <!-- Строка 5 -->
   <tr>
-    <td width="25%" align="center"><img src="gif/epidemic_pic15.gif" width="200"><br><sub>epidemic_pic15</sub></td>
-    <td width="25%" align="center"><img src="gif/epidemic_pic16.gif" width="200"><br><sub>epidemic_pic16</sub></td>
-    <td width="25%" align="center"><img src="gif/epidemic_pic17.gif" width="200"><br><sub>epidemic_pic17</sub></td>
-    <td width="25%" align="center"><img src="gif/epidemic_pic18.gif" width="200"><br><sub>epidemic_pic18</sub></td>
+    <td width="33%" align="center"><img src="gif/epidemic_pic12.gif" width="300"><br><sub>epidemic_pic12</sub></td>
+    <td width="33%" align="center"><img src="gif/epidemic_pic13.gif" width="300"><br><sub>epidemic_pic13</sub></td>
+    <td width="33%" align="center"><img src="gif/epidemic_pic14_1.gif" width="300"><br><sub>epidemic_pic14_1</sub></td>
   </tr>
   <!-- Строка 6 -->
   <tr>
-    <td width="25%" align="center"><img src="gif/epidemic_pic19.gif" width="200"><br><sub>epidemic_pic19</sub></td>
-    <td width="25%" align="center"><img src="gif/epidemic_pic20.gif" width="200"><br><sub>epidemic_pic20</sub></td>
-    <td width="25%" align="center"><img src="gif/epidemic_pic21.gif" width="200"><br><sub>epidemic_pic21</sub></td>
-    <td width="25%" align="center"><img src="gif/epidemic_pic22.gif" width="200"><br><sub>epidemic_pic22</sub></td>
+    <td width="33%" align="center"><img src="gif/epidemic_pic14_2.gif" width="300"><br><sub>epidemic_pic14_2</sub></td>
+    <td width="33%" align="center"><img src="gif/epidemic_pic15.gif" width="300"><br><sub>epidemic_pic15</sub></td>
+    <td width="33%" align="center"><img src="gif/epidemic_pic16.gif" width="300"><br><sub>epidemic_pic16</sub></td>
   </tr>
-  <!-- Строка 7 (оставшиеся 2 гифки) -->
+  <!-- Строка 7 -->
   <tr>
-    <td width="25%" align="center"><img src="gif/epidemic_pic23.gif" width="200"><br><sub>epidemic_pic23</sub></td>
-    <td width="25%" align="center"><img src="gif/epidemic_pic24.gif" width="200"><br><sub>epidemic_pic24</sub></td>
-    <td width="25%"></td> <!-- Пустая ячейка для ровности -->
-    <td width="25%"></td> <!-- Пустая ячейка для ровности -->
+    <td width="33%" align="center"><img src="gif/epidemic_pic17.gif" width="300"><br><sub>epidemic_pic17</sub></td>
+    <td width="33%" align="center"><img src="gif/epidemic_pic18.gif" width="300"><br><sub>epidemic_pic18</sub></td>
+    <td width="33%" align="center"><img src="gif/epidemic_pic19.gif" width="300"><br><sub>epidemic_pic19</sub></td>
+  </tr>
+  <!-- Строка 8 -->
+  <tr>
+    <td width="33%" align="center"><img src="gif/epidemic_pic20.gif" width="300"><br><sub>epidemic_pic20</sub></td>
+    <td width="33%" align="center"><img src="gif/epidemic_pic21.gif" width="300"><br><sub>epidemic_pic21</sub></td>
+    <td width="33%" align="center"><img src="gif/epidemic_pic22.gif" width="300"><br><sub>epidemic_pic22</sub></td>
+  </tr>
+  <!-- Строка 9 (оставшиеся 2 гифки) -->
+  <tr>
+    <td width="33%" align="center"><img src="gif/epidemic_pic23.gif" width="300"><br><sub>epidemic_pic23</sub></td>
+    <td width="33%" align="center"><img src="gif/epidemic_pic24.gif" width="300"><br><sub>epidemic_pic24</sub></td>
+    <td width="33%"></td> <!-- Пустая ячейка для сохранения сетки -->
   </tr>
 </table>
